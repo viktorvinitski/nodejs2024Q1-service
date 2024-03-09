@@ -1,6 +1,6 @@
 import { TAlbum } from 'src/shared/types';
 
-export const albumsDb: TAlbum[] = [
+export const albumsDB: TAlbum[] = [
   {
     id: 'add3dfa7-603f-46c0-935e-a56e488891ad',
     name: 'Intense',

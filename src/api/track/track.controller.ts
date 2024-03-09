@@ -18,8 +18,8 @@ import {
   ApiTags,
   getSchemaPath,
 } from '@nestjs/swagger';
-import { ResponsesMessages } from '../shared/types';
-import { exceptionHandler } from '../shared/utils/exceptionHandler';
+import { ResponsesMessages } from '../../shared/types';
+import { exceptionHandler } from '../../shared/utils/exceptionHandler';
 
 @ApiTags('Tracks')
 @Controller('track')

@@ -15,10 +15,10 @@ import {
   ApiTags,
   getSchemaPath,
 } from '@nestjs/swagger';
-import { exceptionHandler } from '../shared/utils/exceptionHandler';
+import { exceptionHandler } from '../../shared/utils/exceptionHandler';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ResponsesMessages } from '../shared/types';
+import { ResponsesMessages } from '../../shared/types';
 
 @ApiTags('Users')
 @Controller('user')

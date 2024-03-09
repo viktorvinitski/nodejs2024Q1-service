@@ -8,9 +8,9 @@ import {
   HttpCode,
   Put,
 } from '@nestjs/common';
-import { ArtistService } from './artist.service';
-import { CreateArtistDto } from './dto/create-artist.dto';
-import { UpdateArtistDto } from './dto/update-artist.dto';
+import { AlbumService } from './album.service';
+import { CreateAlbumDto } from './dto/create-album.dto';
+import { UpdateAlbumDto } from './dto/update-album.dto';
 import {
   ApiOperation,
   ApiParam,
@@ -18,18 +18,18 @@ import {
   ApiTags,
   getSchemaPath,
 } from '@nestjs/swagger';
-import { ResponsesMessages } from '../shared/types';
-import { exceptionHandler } from '../shared/utils/exceptionHandler';
+import { ResponsesMessages } from '../../shared/types';
+import { exceptionHandler } from '../../shared/utils/exceptionHandler';
 
-@ApiTags('Artists')
-@Controller('artist')
-export class ArtistController {
-  constructor(private readonly artistService: ArtistService) {}
+@ApiTags('Albums')
+@Controller('album')
+export class AlbumController {
+  constructor(private readonly albumService: AlbumService) {}
 
   @Get()
   @ApiOperation({
-    summary: 'Get all artists',
-    description: 'Gets all artists',
+    summary: 'Get albums list',
+    description: 'Gets all albums',
   })
   @ApiResponse({
     status: 200,
@@ -38,7 +38,7 @@ export class ArtistController {
       'application/json': {
         schema: {
           type: 'array',
-          items: { $ref: getSchemaPath('Artist') },
+          items: { $ref: getSchemaPath('Album') },
         },
       },
     },
@@ -48,9 +48,9 @@ export class ArtistController {
     description: ResponsesMessages.Unauthorized,
   })
   @HttpCode(200)
-  getArtists() {
+  getAlbums() {
     try {
-      return this.artistService.getArtists();
+      return this.albumService.getAlbums();
     } catch (error) {
       exceptionHandler(error);
     }
@@ -58,23 +58,29 @@ export class ArtistController {
 
   @Post()
   @ApiOperation({
-    summary: 'Add new artist',
-    description: 'Add new artist',
+    summary: 'Add new album',
+    description: 'Add new album',
     requestBody: {
       required: true,
       content: {
         'application/json': {
           schema: {
             type: 'object',
+            title: 'example',
             properties: {
               name: {
                 type: 'string',
               },
-              grammy: {
-                type: 'boolean',
+              year: {
+                type: 'integer',
+              },
+              artistId: {
+                type: 'string',
+                format: 'uuid',
+                nullable: true,
               },
             },
-            required: ['name', 'grammy'],
+            required: ['name', 'year'],
           },
         },
       },
@@ -82,11 +88,11 @@ export class ArtistController {
   })
   @ApiResponse({
     status: 201,
-    description: 'Successful operation',
+    description: 'Album is created',
     content: {
       'application/json': {
         schema: {
-          $ref: getSchemaPath('Artist'),
+          $ref: getSchemaPath('Album'),
         },
       },
     },
@@ -100,19 +106,19 @@ export class ArtistController {
     description: ResponsesMessages.Unauthorized,
   })
   @HttpCode(201)
-  postArtist(@Body() createArtistDto: CreateArtistDto) {
+  postAlbum(@Body() createAlbumDto: CreateAlbumDto) {
     try {
-      return this.artistService.createArtist(createArtistDto);
+      return this.albumService.createAlbum(createAlbumDto);
     } catch (error) {
       exceptionHandler(error);
     }
   }
 
-  @Get(':artistId')
-  @ApiParam({ name: 'artistId', type: 'string', format: 'uuid' })
+  @Get(':albumId')
+  @ApiParam({ name: 'albumId', type: 'string', format: 'uuid' })
   @ApiOperation({
-    summary: 'Get single artist by id',
-    description: 'Get single artist by id',
+    summary: 'Get album by id',
+    description: 'Gets album by id',
   })
   @ApiResponse({
     status: 200,
@@ -120,14 +126,14 @@ export class ArtistController {
     content: {
       'application/json': {
         schema: {
-          $ref: getSchemaPath('Artist'),
+          $ref: getSchemaPath('Album'),
         },
       },
     },
   })
   @ApiResponse({
     status: 400,
-    description: 'Bad request. artistId is invalid (not uuid)',
+    description: 'Bad request. albumId is invalid (not uuid)',
   })
   @ApiResponse({
     status: 401,
@@ -135,37 +141,43 @@ export class ArtistController {
   })
   @ApiResponse({
     status: 404,
-    description: 'Artist was not found.',
+    description: 'Album was not found.',
   })
   @HttpCode(200)
-  getArtist(@Param('artistId') artistId: string) {
+  getAlbum(@Param('albumId') albumId: string) {
     try {
-      return this.artistService.getArtist(artistId);
+      return this.albumService.getAlbum(albumId);
     } catch (error) {
       exceptionHandler(error);
     }
   }
 
-  @Put(':artistId')
-  @ApiParam({ name: 'artistId', type: 'string', format: 'uuid' })
+  @Put(':albumId')
+  @ApiParam({ name: 'albumId', type: 'string', format: 'uuid' })
   @ApiOperation({
-    summary: 'Update artist information',
-    description: 'Update artist information by UUID',
+    summary: 'Update album information',
+    description: 'Update library album information by UUID',
     requestBody: {
       required: true,
       content: {
         'application/json': {
           schema: {
             type: 'object',
+            title: 'example',
             properties: {
               name: {
                 type: 'string',
               },
-              grammy: {
-                type: 'boolean',
+              year: {
+                type: 'integer',
+              },
+              artistId: {
+                type: 'string',
+                format: 'uuid',
+                nullable: true,
               },
             },
-            required: ['string', 'boolean'],
+            required: ['name', 'year'],
           },
         },
       },
@@ -173,16 +185,16 @@ export class ArtistController {
   })
   @ApiResponse({
     status: 200,
-    description: 'The artist has been updated.',
+    description: 'The album has been updated.',
     content: {
       'application/json': {
-        schema: { $ref: getSchemaPath('Artist') },
+        schema: { $ref: getSchemaPath('Album') },
       },
     },
   })
   @ApiResponse({
     status: 400,
-    description: 'Bad request. artistId is invalid (not uuid)',
+    description: 'Bad request. albumId is invalid (not uuid)',
   })
   @ApiResponse({
     status: 401,
@@ -190,25 +202,25 @@ export class ArtistController {
   })
   @ApiResponse({
     status: 404,
-    description: 'Artist was not found.',
+    description: 'Album was not found.',
   })
   @HttpCode(200)
-  putArtist(
-    @Param('artistId') artistId: string,
-    @Body() updateArtistDto: UpdateArtistDto,
+  putAlbum(
+    @Param('albumId') albumId: string,
+    @Body() updateAlbumDto: UpdateAlbumDto,
   ) {
     try {
-      return this.artistService.updateArtist(artistId, updateArtistDto);
+      return this.albumService.updateAlbum(albumId, updateAlbumDto);
     } catch (error) {
       exceptionHandler(error);
     }
   }
 
-  @Delete(':artistId')
-  @ApiParam({ name: 'artistId', type: 'string', format: 'uuid' })
+  @Delete(':albumId')
+  @ApiParam({ name: 'albumId', type: 'string', format: 'uuid' })
   @ApiOperation({
-    summary: 'Delete artist',
-    description: 'Delete artist from library',
+    summary: 'Delete album',
+    description: 'Delete album',
   })
   @ApiResponse({
     status: 204,
@@ -216,7 +228,7 @@ export class ArtistController {
   })
   @ApiResponse({
     status: 400,
-    description: 'Bad request. artistId is invalid (not uuid)',
+    description: 'Bad request. albumId is invalid (not uuid)',
   })
   @ApiResponse({
     status: 401,
@@ -224,14 +236,14 @@ export class ArtistController {
   })
   @ApiResponse({
     status: 404,
-    description: 'Artist was not found.',
+    description: 'Album was not found.',
   })
   @HttpCode(204)
-  deleteArtist(@Param('artistId') artistId: string) {
+  deleteAlbum(@Param('albumId') albumId: string) {
     try {
-      return this.artistService.deleteArtist(artistId);
+      return this.albumService.deleteAlbum(albumId);
     } catch (error) {
-      exceptionHandler(error as Error);
+      exceptionHandler(error);
     }
   }
 }

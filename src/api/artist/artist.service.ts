@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { artistsDB } from '../shared/databases/artists';
+import { artistsDB } from '../../shared/databases/artists';
 import { CreateArtistDto } from './dto/create-artist.dto';
-import { TArtist } from '../shared/types';
+import { TArtist } from '../../shared/types';
 import { v4 as uuid } from 'uuid';
-import { uuidValidate } from '../shared/utils/uuidValidate';
-import { findRecord } from '../shared/utils/findRecord';
+import { uuidValidate } from '../../shared/utils/uuidValidate';
+import { findRecord } from '../../shared/utils/findRecord';
 import { UpdateArtistDto } from './dto/update-artist.dto';
-import { favoritesDB } from '../shared/databases/favorites';
-import { tracksDB } from '../shared/databases/tracks';
-import { albumsDb } from '../shared/databases/albums';
+import { favoritesDB } from '../../shared/databases/favorites';
+import { tracksDB } from '../../shared/databases/tracks';
+import { albumsDB } from '../../shared/databases/albums';
 
 @Injectable()
 export class ArtistService {
@@ -57,7 +57,7 @@ export class ArtistService {
     const artist = findRecord(artistsDB, artistId);
     const artistIndex = artistsDB.indexOf(artist as TArtist);
     artistsDB.splice(artistIndex, 1);
-    const album = albumsDb.find((album) => album.artistId === artistId);
+    const album = albumsDB.find((album) => album.artistId === artistId);
     if (album) {
       album.artistId = null;
     }

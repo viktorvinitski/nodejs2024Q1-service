@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { usersDB } from '../shared/databases/users';
-import { TUser } from '../shared/types';
+import { usersDB } from '../../shared/databases/users';
+import { TUser } from '../../shared/types';
 import { v4 as uuid } from 'uuid';
-import { uuidValidate } from '../shared/utils/uuidValidate';
-import { findRecord } from '../shared/utils/findRecord';
+import { uuidValidate } from '../../shared/utils/uuidValidate';
+import { findRecord } from '../../shared/utils/findRecord';
 
 @Injectable()
 export class UsersService {

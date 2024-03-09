@@ -5,9 +5,11 @@ import { join } from 'path';
 import { readFile } from 'fs/promises';
 import { config } from 'dotenv';
 import { load } from 'js-yaml';
-import { UsersModule } from './users/users.module';
-import { ArtistModule } from './artist/artist.module';
-import { TrackModule } from './track/track.module';
+import { UsersModule } from './api/users/users.module';
+import { ArtistModule } from './api/artist/artist.module';
+import { TrackModule } from './api/track/track.module';
+import { AlbumModule } from './api/album/album.module';
+import { FavoritesModule } from './api/favorites/favorites.module';
 config();
 
 const port = process.env.PORT || 4000;
@@ -20,7 +22,13 @@ async function bootstrap() {
 
   const config: OpenAPIObject = load(apiYaml) as OpenAPIObject;
   const document = SwaggerModule.createDocument(app, config, {
-    include: [UsersModule, TrackModule, ArtistModule],
+    include: [
+      UsersModule,
+      TrackModule,
+      ArtistModule,
+      AlbumModule,
+      FavoritesModule,
+    ],
   });
 
   SwaggerModule.setup('docs', app, document);

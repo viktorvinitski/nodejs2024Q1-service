@@ -7,6 +7,7 @@ import { config } from 'dotenv';
 import { load } from 'js-yaml';
 import { UsersModule } from './users/users.module';
 import { ArtistModule } from './artist/artist.module';
+import { TrackModule } from './track/track.module';
 config();
 
 const port = process.env.PORT || 4000;
@@ -19,7 +20,7 @@ async function bootstrap() {
 
   const config: OpenAPIObject = load(apiYaml) as OpenAPIObject;
   const document = SwaggerModule.createDocument(app, config, {
-    include: [UsersModule, ArtistModule],
+    include: [UsersModule, TrackModule, ArtistModule],
   });
 
   SwaggerModule.setup('docs', app, document);

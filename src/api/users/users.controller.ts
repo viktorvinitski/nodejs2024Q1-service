@@ -127,7 +127,7 @@ export class UsersController {
   })
   @ApiResponse({
     status: 400,
-    description: 'Bad request. UserId is invalid (not uuid)',
+    description: 'Bad request. userId is invalid (not uuid)',
   })
   @ApiResponse({
     status: 401,
@@ -209,7 +209,7 @@ export class UsersController {
   })
   @ApiResponse({
     status: 400,
-    description: 'Bad request. UserId is invalid (not uuid)',
+    description: 'Bad request. userId is invalid (not uuid)',
   })
   @ApiResponse({
     status: 401,
@@ -246,7 +246,7 @@ export class UsersController {
   })
   @ApiResponse({
     status: 400,
-    description: 'Bad request. UserId is invalid (not uuid)',
+    description: 'Bad request. userId is invalid (not uuid)',
   })
   @ApiResponse({
     status: 401,

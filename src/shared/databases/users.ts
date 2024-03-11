@@ -2,7 +2,7 @@ import { TUser } from '../types';
 
 export const usersDB: TUser[] = [
   {
-    id: 'd7d59e7d-cf83-5b69-a33b-8912311ceb6e',
+    id: '46f2ba9b-d756-4006-b384-fd46aff1d79e',
     login: 'Viktor',
     password: 'admin',
     version: 1,

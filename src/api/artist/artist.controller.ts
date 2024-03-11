@@ -111,8 +111,8 @@ export class ArtistController {
   @Get(':artistId')
   @ApiParam({ name: 'artistId', type: 'string', format: 'uuid' })
   @ApiOperation({
-    summary: 'Get single artist by id',
-    description: 'Get single artist by id',
+    summary: 'Get artist by id',
+    description: 'Get artist by id',
   })
   @ApiResponse({
     status: 200,
@@ -231,7 +231,7 @@ export class ArtistController {
     try {
       return this.artistService.deleteArtist(artistId);
     } catch (error) {
-      exceptionHandler(error as Error);
+      exceptionHandler(error);
     }
   }
 }

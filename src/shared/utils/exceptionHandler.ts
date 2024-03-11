@@ -6,7 +6,7 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 
-const errorList = [
+const errors = [
   { code: '400', handler: BadRequestException },
   { code: '403', handler: ForbiddenException },
   { code: '404', handler: NotFoundException },
@@ -15,5 +15,5 @@ const errorList = [
 ];
 
 export const exceptionHandler = (error: Error) => {
-  throw new (errorList.find((item) => item.code === error.message).handler)();
+  throw new (errors.find((item) => item.code === error.message).handler)();
 };

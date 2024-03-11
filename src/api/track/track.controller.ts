@@ -113,7 +113,7 @@ export class TrackController {
     try {
       return this.trackService.postTrack(createTrackDto);
     } catch (error) {
-      exceptionHandler(error as Error);
+      exceptionHandler(error);
     }
   }
 
@@ -151,7 +151,7 @@ export class TrackController {
     try {
       return this.trackService.getTrack(trackId);
     } catch (error) {
-      exceptionHandler(error as Error);
+      exceptionHandler(error);
     }
   }
 

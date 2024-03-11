@@ -7,7 +7,7 @@ export const artistsDB: TArtist[] = [
     grammy: false,
   },
   {
-    id: '480d11ea-48db-4e0c-9aff-fd8590b88ffd',
+    id: '2f2d67bb-2339-4b59-a6cd-c334ee151f31',
     name: 'Imanbek',
     grammy: true,
   },

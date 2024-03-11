@@ -196,7 +196,7 @@ export class FavoritesController {
     try {
       return this.favoritesService.postFavoritesArtist(artistId);
     } catch (error) {
-      exceptionHandler(error as Error);
+      exceptionHandler(error);
     }
   }
 

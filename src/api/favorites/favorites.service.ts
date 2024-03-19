@@ -1,52 +1,119 @@
 import { Injectable } from '@nestjs/common';
-import { favoritesDB } from '../../shared/databases/favorites';
-import { tracksDB } from '../../shared/databases/tracks';
-import { albumsDB } from '../../shared/databases/albums';
-import { artistsDB } from '../../shared/databases/artists';
 import { uuidValidate } from '../../shared/utils/uuidValidate';
 import { findRecord } from '../../shared/utils/findRecord';
-import { TDatabase } from '../../shared/types';
+import { PrismaService } from '../../prisma.service';
 
 @Injectable()
 export class FavoritesService {
-  getFavorites() {
-    return favoritesDB;
+  constructor(private prisma: PrismaService) {}
+
+  async getFavorites() {
+    return {
+      artists: (
+        await this.prisma.favoriteArtists.findMany({
+          select: {
+            artist: true,
+          },
+        })
+      ).map((artist) => artist.artist),
+      albums: (
+        await this.prisma.favoriteAlbums.findMany({
+          select: {
+            album: true,
+          },
+        })
+      ).map((album) => album.album),
+      tracks: (
+        await this.prisma.favoriteTracks.findMany({
+          select: {
+            track: true,
+          },
+        })
+      ).map((track) => track.track),
+    };
   }
 
-  postFavoritesTrack(trackId: string) {
-    this.postFavorites(trackId, tracksDB, 'tracks');
+  async postFavoritesTrack(trackId: string) {
+    await this.postFavorites(trackId, this.prisma, 'tracks', 'favoriteTracks');
   }
 
-  deleteFavoritesTrack(trackId: string) {
-    this.deleteFavorites(trackId, 'tracks');
+  async deleteFavoritesTrack(trackId: string) {
+    await this.deleteFavorites(
+      trackId,
+      this.prisma,
+      'tracks',
+      'favoriteTracks',
+    );
   }
 
-  postFavoritesAlbum(albumId: string) {
-    this.postFavorites(albumId, albumsDB, 'albums');
+  async postFavoritesAlbum(albumId: string) {
+    await this.postFavorites(albumId, this.prisma, 'albums', 'favoriteAlbums');
   }
 
-  deleteFavoritesAlbum(albumId: string) {
-    this.deleteFavorites(albumId, 'albums');
+  async deleteFavoritesAlbum(albumId: string) {
+    await this.deleteFavorites(
+      albumId,
+      this.prisma,
+      'albums',
+      'favoriteAlbums',
+    );
   }
 
-  postFavoritesArtist(artistId: string) {
-    this.postFavorites(artistId, artistsDB, 'artists');
+  async postFavoritesArtist(artistId: string) {
+    await this.postFavorites(
+      artistId,
+      this.prisma,
+      'artists',
+      'favoriteArtists',
+    );
   }
 
-  deleteFavoritesArtist(artistId: string) {
-    this.deleteFavorites(artistId, 'artists');
+  async deleteFavoritesArtist(artistId: string) {
+    await this.deleteFavorites(
+      artistId,
+      this.prisma,
+      'artists',
+      'favoriteArtists',
+    );
   }
 
-  postFavorites(id: string, database: TDatabase[], type: string) {
+  async postFavorites(
+    id: string,
+    prisma: PrismaService,
+    model: string,
+    type: string,
+  ) {
     uuidValidate(id);
-    const record = findRecord(database, id, '422');
-    favoritesDB[type].push(record);
+    const record = await findRecord(prisma, id, model, '422');
+    const nameId = [
+      ['tracks', 'trackId'],
+      ['artists', 'artistId'],
+      ['albums', 'albumId'],
+    ].find((el) => el[0] === model)[1];
+    await prisma[type].create({
+      data: {
+        [nameId]: record.id,
+      },
+    });
   }
 
-  deleteFavorites(id: string, type: string) {
+  async deleteFavorites(
+    id: string,
+    prisma: PrismaService,
+    model: string,
+    type: string,
+  ) {
     uuidValidate(id);
-    const record = findRecord(favoritesDB[type], id);
-    const recordIndex = favoritesDB[type].indexOf(record);
-    favoritesDB[type].splice(recordIndex, 1);
+    await findRecord(prisma, id, model);
+    const nameId = [
+      ['tracks', 'trackId'],
+      ['artists', 'artistId'],
+      ['albums', 'albumId'],
+    ].find((el) => el[0] === model)[1];
+    await prisma[type].delete({
+      where: {
+        [nameId]: id,
+      },
+    });
   }
 }

@@ -1,19 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { usersDB } from '../../shared/databases/users';
 import { TUser } from '../../shared/types';
 import { v4 as uuid } from 'uuid';
 import { uuidValidate } from '../../shared/utils/uuidValidate';
 import { findRecord } from '../../shared/utils/findRecord';
+import { PrismaService } from '../../prisma.service';
 
 @Injectable()
 export class UsersService {
-  getUsers() {
-    return usersDB.map(({ password, ...rest }) => ({ ...rest }));
+  constructor(private prisma: PrismaService) {}
+
+  async getUsers() {
+    return (await this.prisma.users.findMany()).map((user) => ({
+      ...user,
+      createdAt: Number(user.createdAt),
+      updatedAt: Number(user.updatedAt),
+      password: undefined,
+    }));
   }
 
-  createUser({ login, password }: CreateUserDto) {
+  async createUser({ login, password }: CreateUserDto) {
     if (!(login && password)) {
       throw new Error('400');
     }
@@ -25,38 +32,61 @@ export class UsersService {
       createdAt: Date.now(),
       updatedAt: Date.now(),
     };
-    usersDB.push(newUser);
+    await this.prisma.users.create({
+      data: newUser,
+    });
     return { ...newUser, password: undefined };
   }
 
-  getUser(userId: string) {
+  async getUser(userId: string) {
     uuidValidate(userId);
-    const user = findRecord(usersDB, userId);
-    return { ...user, password: undefined };
+    const user = await findRecord(this.prisma, userId, 'users');
+    return {
+      ...user,
+      createdAt: Number(user.createdAt),
+      updatedAt: Number(user.updatedAt),
+      password: undefined,
+    };
   }
 
-  updateUser(userId: string, { oldPassword, newPassword }: UpdateUserDto) {
+  async updateUser(
+    userId: string,
+    { oldPassword, newPassword }: UpdateUserDto,
+  ) {
     uuidValidate(userId);
     if (!(oldPassword && newPassword)) {
       throw new Error('400');
     }
-    const user = findRecord(usersDB, userId) as TUser;
+    const user = await findRecord(this.prisma, userId, 'users');
     if (user.password !== oldPassword) {
       throw new Error('403');
     }
 
-    user.password = newPassword;
-    user.version = user.version + 1;
-    user.updatedAt = Date.now();
-
-    const { id, login, version, createdAt, updatedAt } = user;
-    return { id, login, version, createdAt, updatedAt };
+    const updatedUser = await this.prisma.users.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        password: newPassword,
+        version: user.version + 1,
+        updatedAt: Date.now(),
+      },
+    });
+    return {
+      ...updatedUser,
+      createdAt: Number(updatedUser.createdAt),
+      updatedAt: Number(updatedUser.updatedAt),
+      password: undefined,
+    };
   }
 
-  deleteUser(userId: string) {
+  async deleteUser(userId: string) {
     uuidValidate(userId);
-    const user = findRecord(usersDB, userId) as TUser;
-    const userIndex = usersDB.indexOf(user);
-    usersDB.splice(userIndex, 1);
+    await findRecord(this.prisma, userId, 'users');
+    await this.prisma.users.delete({
+      where: {
+        id: userId,
+      },
+    });
   }
 }

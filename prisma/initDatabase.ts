@@ -8,7 +8,7 @@ const host = process.env.DB_HOST || 'localhost';
 const database = 'postgres';
 const password = process.env.DB_PASSWORD || 'admin';
 const port = +process.env.DB_PORT || 5432;
-const databaseName = process.env.DB_NAME || 'homelibrarydb';
+const databaseName = process.env.DB_NAME || 'homelibrary';
 
 const dbParams = {
   user,

@@ -48,9 +48,9 @@ export class AlbumController {
     description: ResponsesMessages.Unauthorized,
   })
   @HttpCode(200)
-  getAlbums() {
+  async getAlbums() {
     try {
-      return this.albumService.getAlbums();
+      return await this.albumService.getAlbums();
     } catch (error) {
       exceptionHandler(error);
     }
@@ -106,9 +106,9 @@ export class AlbumController {
     description: ResponsesMessages.Unauthorized,
   })
   @HttpCode(201)
-  postAlbum(@Body() createAlbumDto: CreateAlbumDto) {
+  async postAlbum(@Body() createAlbumDto: CreateAlbumDto) {
     try {
-      return this.albumService.createAlbum(createAlbumDto);
+      return await this.albumService.createAlbum(createAlbumDto);
     } catch (error) {
       exceptionHandler(error);
     }
@@ -144,9 +144,9 @@ export class AlbumController {
     description: 'Album was not found.',
   })
   @HttpCode(200)
-  getAlbum(@Param('albumId') albumId: string) {
+  async getAlbum(@Param('albumId') albumId: string) {
     try {
-      return this.albumService.getAlbum(albumId);
+      return await this.albumService.getAlbum(albumId);
     } catch (error) {
       exceptionHandler(error);
     }
@@ -205,12 +205,12 @@ export class AlbumController {
     description: 'Album was not found.',
   })
   @HttpCode(200)
-  putAlbum(
+  async putAlbum(
     @Param('albumId') albumId: string,
     @Body() updateAlbumDto: UpdateAlbumDto,
   ) {
     try {
-      return this.albumService.updateAlbum(albumId, updateAlbumDto);
+      return await this.albumService.updateAlbum(albumId, updateAlbumDto);
     } catch (error) {
       exceptionHandler(error);
     }
@@ -239,9 +239,9 @@ export class AlbumController {
     description: 'Album was not found.',
   })
   @HttpCode(204)
-  deleteAlbum(@Param('albumId') albumId: string) {
+  async deleteAlbum(@Param('albumId') albumId: string) {
     try {
-      return this.albumService.deleteAlbum(albumId);
+      return await this.albumService.deleteAlbum(albumId);
     } catch (error) {
       exceptionHandler(error);
     }

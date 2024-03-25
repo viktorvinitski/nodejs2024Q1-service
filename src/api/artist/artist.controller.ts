@@ -48,9 +48,9 @@ export class ArtistController {
     description: ResponsesMessages.Unauthorized,
   })
   @HttpCode(200)
-  getArtists() {
+  async getArtists() {
     try {
-      return this.artistService.getArtists();
+      return await this.artistService.getArtists();
     } catch (error) {
       exceptionHandler(error);
     }
@@ -100,9 +100,9 @@ export class ArtistController {
     description: ResponsesMessages.Unauthorized,
   })
   @HttpCode(201)
-  postArtist(@Body() createArtistDto: CreateArtistDto) {
+  async postArtist(@Body() createArtistDto: CreateArtistDto) {
     try {
-      return this.artistService.createArtist(createArtistDto);
+      return await this.artistService.createArtist(createArtistDto);
     } catch (error) {
       exceptionHandler(error);
     }
@@ -138,9 +138,9 @@ export class ArtistController {
     description: 'Artist was not found.',
   })
   @HttpCode(200)
-  getArtist(@Param('artistId') artistId: string) {
+  async getArtist(@Param('artistId') artistId: string) {
     try {
-      return this.artistService.getArtist(artistId);
+      return await this.artistService.getArtist(artistId);
     } catch (error) {
       exceptionHandler(error);
     }
@@ -193,12 +193,12 @@ export class ArtistController {
     description: 'Artist was not found.',
   })
   @HttpCode(200)
-  putArtist(
+  async putArtist(
     @Param('artistId') artistId: string,
     @Body() updateArtistDto: UpdateArtistDto,
   ) {
     try {
-      return this.artistService.updateArtist(artistId, updateArtistDto);
+      return await this.artistService.updateArtist(artistId, updateArtistDto);
     } catch (error) {
       exceptionHandler(error);
     }
@@ -227,9 +227,9 @@ export class ArtistController {
     description: 'Artist was not found.',
   })
   @HttpCode(204)
-  deleteArtist(@Param('artistId') artistId: string) {
+  async deleteArtist(@Param('artistId') artistId: string) {
     try {
-      return this.artistService.deleteArtist(artistId);
+      return await this.artistService.deleteArtist(artistId);
     } catch (error) {
       exceptionHandler(error);
     }

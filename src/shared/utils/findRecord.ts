@@ -1,11 +1,16 @@
-import { TDatabase } from '../types';
+import { PrismaService } from '../../prisma.service';
 
-export const findRecord = (
-  database: TDatabase[],
+export const findRecord = async (
+  prisma: PrismaService,
   id: string,
+  model: string,
   errorCode?: string,
 ) => {
-  const record = database.find((record) => record.id === id);
+  const record = await prisma[model].findUnique({
+    where: {
+      id: String(id),
+    },
+  });
   if (!record) {
     throw new Error(errorCode ?? '404');
   }
